@@ -1,17 +1,17 @@
-import { useUploadFile } from '@/hooks/use-upload-file'
 import { UploadIcon } from 'lucide-react'
-import { useRef, useState, type ChangeEvent } from 'react'
+import { useRef, type ComponentProps } from 'react'
 
-export function FileUploader() {
-  const [file, setFile] = useState<File | null>(null)
+type FileUploaderProps = {
+  text: string
+  helperText?: string
+} & ComponentProps<'input'>
+
+export function FileUploader({
+  text,
+  helperText,
+  ...inputProps
+}: FileUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { mutate: uploadFile } = useUploadFile(file!)
-
-  async function handleFileInput(event: ChangeEvent<HTMLInputElement>) {
-    const [files] = event.target.files ?? []
-    setFile(files ?? null)
-    uploadFile({ directory: 'ids' })
-  }
 
   function openFileDialog() {
     fileInputRef.current?.click()
@@ -24,9 +24,9 @@ export function FileUploader() {
         onClick={openFileDialog}
       >
         <input
+          {...inputProps}
           ref={fileInputRef}
           type='file'
-          onChange={handleFileInput}
           className='hidden'
         />
 
@@ -40,10 +40,8 @@ export function FileUploader() {
           </div>
 
           <div className='space-y-2'>
-            <h3 className='text-xl font-semibold text-gray-800'>
-              Upload your files
-            </h3>
-            <p className='text-gray-600'>Click here to browse your files</p>
+            <h3 className='text-xl font-semibold text-gray-800'>{text}</h3>
+            {helperText && <p className='text-gray-600'>{helperText}</p>}
           </div>
         </div>
       </div>
