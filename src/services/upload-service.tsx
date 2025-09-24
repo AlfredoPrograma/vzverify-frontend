@@ -33,6 +33,8 @@ export async function uploadFileToPresignedUrl({
   file,
   presignedUrl
 }: UploadFileToPresignedUrlParams) {
+  console.log(presignedUrl)
+
   const response = await axios.put(presignedUrl, file)
   return response.data
 }
