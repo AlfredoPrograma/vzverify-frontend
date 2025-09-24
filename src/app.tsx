@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Route, Routes } from 'react-router'
-import { BaseLayout } from '@/layouts/BaseLayout'
-import { UploadPhotosView } from '@/views/UploadPhotosView'
+import { BaseLayout } from '@/layouts/base-layout'
+import { UploadPhotosView } from '@/views/upload-photos-view'
 
 const queryClient = new QueryClient()
 
