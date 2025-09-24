@@ -1,3 +1,3 @@
 export function UploadPhotosView() {
-  return <h1>Photos</h1>
+  return <h1>Hello world</h1>
 }
