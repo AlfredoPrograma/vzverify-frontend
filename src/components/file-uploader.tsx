@@ -1,16 +1,28 @@
+import {
+  useUploadFileToPresignedUrl,
+  useUploadPresignedUrl
+} from '@/hooks/use-upload-presigned-url'
 import { UploadIcon } from 'lucide-react'
 import { useRef, useState, type ChangeEvent } from 'react'
 
 export function FileUploader() {
-  const [file, setFile] = useState<File | null>(null)
+  const { mutate: requestPresignUploadUrl, data } = useUploadPresignedUrl()
+  const { mutate: uploadFileToPresignedUrl, isSuccess } =
+    useUploadFileToPresignedUrl()
+
+  const [, setFile] = useState<File | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  function handleFileInput(event: ChangeEvent<HTMLInputElement>) {
+  console.log({ data, isSuccess })
+
+  async function handleFileInput(event: ChangeEvent<HTMLInputElement>) {
     const [files] = event.target.files ?? []
     setFile(files ?? null)
+    requestPresignUploadUrl({ directory: 'ids' })
+    uploadFileToPresignedUrl({ file: files, presignedUrl: data?.url ?? '' })
   }
 
-  function openFileDialog(event: MouseEvent<HTMLDivElement, MouseEvent>) {
+  function openFileDialog() {
     fileInputRef.current?.click()
   }
 
