@@ -7,7 +7,7 @@ export function BaseLayout() {
         <h1 className='text-xl font-bold'>ID Verification</h1>
       </header>
 
-      <main className='max-w-4xl mx-auto flex-grow p-4'>
+      <main className='w-full max-w-4xl mx-auto flex-grow p-4'>
         <Outlet />
       </main>
     </div>
