@@ -1,6 +1,7 @@
-import { PhotoPreview } from '@/components/capture/photo-preview'
-import { Button } from '@/components/ui/button'
-import { useRef, useState, type ComponentRef } from 'react'
+import { PhotoCaptureSection } from '@/components/upload-photos/photo-capture-section'
+import { ReviewPhotosSection } from '@/components/upload-photos/review-photos-section'
+import { UploadStepHeader } from '@/components/upload-photos/photo-step-header'
+import { useRef, useState, type ComponentRef, type RefObject } from 'react'
 import Webcam from 'react-webcam'
 
 const steps = {
@@ -32,47 +33,38 @@ export function UploadPhotosView() {
 
   const stepData = steps[step]
   const captureField = step === 1 ? 'id' : 'selfie'
+  const buttonText =
+    captureField === 'id' ? 'Capture ID Photo' : 'Capture Selfie'
 
-  const onCapture = (photoField: keyof Photos, nextStep: Step) => {
+  const handleCapture = (photoField: keyof Photos) => {
     if (!webcamRef.current) {
       throw new Error('Webcam not available')
     }
 
     const imageSrc = webcamRef.current.getScreenshot()
     setPhotos((prev) => ({ ...prev, [photoField]: imageSrc }))
-    setStep(nextStep)
+    setStep((currentStep) => (currentStep + 1) as Step)
   }
 
   return (
     <div>
-      <header className='text-center'>
-        <h1>{stepData.title}</h1>
-        <p>{stepData.description}</p>
-      </header>
+      <UploadStepHeader
+        title={stepData.title}
+        description={stepData.description}
+      />
 
       {step < 3 ? (
-        <>
-          <Webcam ref={webcamRef} />
-
-          <Button onClick={() => onCapture(captureField, (step + 1) as Step)}>
-            Capture {captureField === 'id' ? 'ID Photo' : 'Selfie'}
-          </Button>
-        </>
+        <PhotoCaptureSection
+          webcamRef={webcamRef as RefObject<ComponentRef<typeof Webcam>>}
+          onCapture={() => handleCapture(captureField)}
+          buttonText={buttonText}
+        />
       ) : (
-        <div>
-          <div>
-            <h3>ID Photo</h3>
-            <PhotoPreview photo={photos.id!} />
-          </div>
-          <div>
-            <h3>Selfie</h3>
-            <PhotoPreview photo={photos.selfie!} />
-          </div>
-
-          <Button onClick={() => alert('Submitted!')}>
-            Submit for Verification
-          </Button>
-        </div>
+        <ReviewPhotosSection
+          idPhoto={photos.id!}
+          selfiePhoto={photos.selfie!}
+          onSubmit={() => alert('Submitted!')}
+        />
       )}
     </div>
   )
